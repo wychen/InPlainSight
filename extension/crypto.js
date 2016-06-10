@@ -5,7 +5,7 @@
 */
 const kKDFAlgorithm = 'PBKDF2';
 const kKDFSaltSize = 8;
-const kKDFIterations = 4096;
+const kKDFIterations = 1024 * 128;
 const kKDFHash = 'SHA-256';
 const kCipherAlgorithm = 'AES-GCM';
 const kCipherKeySize = 256;
@@ -116,7 +116,7 @@ function encrypt(password, plain_text)
  * ArrayBuffer plain text.
  *
  * @param {string} password
- * @param {ArrayBuffer} cipher_text
+ * @param {Uint8Array} cipher_text
  * @return {Promise}
  */
 function decrypt(password, cipher_text)
@@ -172,6 +172,3 @@ function testEncryptDecryptFail()
     console.log(reason);
   });
 }
-
-testEncryptDecrypt();
-testEncryptDecryptFail();
