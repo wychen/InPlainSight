@@ -1,3 +1,5 @@
+"use strict";
+
 /**
 * Algorithm Parameters
 */
@@ -100,7 +102,8 @@ function encrypt(password, plain_text)
     return crypto.subtle.encrypt(algorithm, result.key, plain_text);
   }).then(function(cipher_text) {
     // Concatenate salts with cipher_text.
-    final_output = new Uint8Array(cipher_text.byteLength + 16);
+    cipher_text = new Uint8Array(cipher_text);
+    var final_output = new Uint8Array(cipher_text.length + 16);
     final_output.set(salt1, 0);
     final_output.set(salt2, 8);
     final_output.set(cipher_text, 16);
@@ -145,8 +148,30 @@ function testEncryptDecrypt()
     } else {
       console.log('ENCRYPT/DECRYPT FAIL!');
     }
+  }, function(reason) {
+    console.log('DECRYPT FAIL!');
+    console.log(reason);
+  });
+}
+
+function testEncryptDecryptFail()
+{
+  var password = 'test_password_345_%$#';
+  var data = str2ab('test_data');
+  encrypt(password, data).then(function(encrypted_data) {
+    return decrypt('wrong password', encrypted_data);
+  }).then(function(decrypted_data) {
+    console.log('decrypt finished')
+    if (ab2str(decrypted_data) == 'test_data') {
+      console.log('ENCRYPT/DECRYPT SUCCESS!');
+    } else {
+      console.log('ENCRYPT/DECRYPT FAIL!');
+    }
+  }, function(reason) {
+    console.log('DECRYPT FAIL!');
+    console.log(reason);
   });
 }
 
 testEncryptDecrypt();
-
+testEncryptDecryptFail();
